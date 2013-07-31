@@ -10,4 +10,4 @@ This class allows the original version passed out in one response to be used for
 
 ### Target Version
 
-Master is currently tracking the latest hibernate 4 release. See branches for earlier versions (including Hibernate 3).
+Master is currently tracking the latest Hibernate 4 release. See branches for earlier versions (including Hibernate 3).
