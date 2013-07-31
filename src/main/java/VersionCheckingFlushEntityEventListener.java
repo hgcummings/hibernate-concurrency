@@ -18,7 +18,7 @@ public class VersionCheckingFlushEntityEventListener extends DefaultFlushEntityE
     /**
      * Check whether the entity to be flushed has a version matching the DB. If so, perform the default behaviour
      * (defined in the parent class); otherwise throw a StaleObjectStateException, as suggested in
-     * http://docs.jboss.org/hibernate/orm/3.6/reference/en-US/html/transactions.html#transactions-optimistic-manual
+     * http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html/ch13.html#transactions-optimistic-manual
      */
     @Override
     public void onFlushEntity(final FlushEntityEvent event) {

@@ -1,6 +1,7 @@
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.integrator.spi.IntegratorService;
@@ -25,8 +26,8 @@ public abstract class OptimisticConcurrencyTest {
     public void setup() throws Exception {
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
-        ServiceRegistryBuilder serviceRegistryBuilder =
-                new ServiceRegistryBuilder().applySettings(configuration.getProperties());
+        StandardServiceRegistryBuilder serviceRegistryBuilder =
+                new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
 
         if (getCustomFlushEntityEventListenerType() != null) {
             serviceRegistryBuilder.addService(IntegratorService.class, new IntegratorService() {
@@ -37,7 +38,7 @@ public abstract class OptimisticConcurrencyTest {
             });
         }
 
-        sessionFactory = configuration.buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
+        sessionFactory = configuration.buildSessionFactory(serviceRegistryBuilder.build());
     }
 
     @Test
