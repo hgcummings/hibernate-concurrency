@@ -1,6 +1,6 @@
 import org.hibernate.StaleObjectStateException;
-import org.hibernate.event.internal.DefaultFlushEntityEventListener;
-import org.hibernate.event.spi.FlushEntityEvent;
+import org.hibernate.event.FlushEntityEvent;
+import org.hibernate.event.def.DefaultFlushEntityEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
 /**
@@ -21,7 +21,7 @@ public class VersionCheckingFlushEntityEventListener extends DefaultFlushEntityE
      * http://docs.jboss.org/hibernate/orm/3.6/reference/en-US/html/transactions.html#transactions-optimistic-manual
      */
     @Override
-    public void onFlushEntity(final FlushEntityEvent event) {
+    public void onFlushEntity(FlushEntityEvent event) {
         EntityPersister entityPersister = event.getEntityEntry().getPersister();
 
         if (entityPersister.isVersioned()) {
@@ -30,12 +30,12 @@ public class VersionCheckingFlushEntityEventListener extends DefaultFlushEntityE
             Object databaseVersion = event.getEntityEntry().getVersion();
 
             // This is the current version of the in-memory object, reflecting any changes made by the application code
-            Object inMemoryVersion = entityPersister.getVersion(event.getEntity());
+            Object inMemoryVersion = entityPersister.getVersion(event.getEntity(), event.getSession().getEntityMode());
 
             if (!inMemoryVersion.equals(databaseVersion)) {
                 throw new StaleObjectStateException(
-                        event.getEntityEntry().getEntityName(),
-                        event.getEntityEntry().getId());
+                    event.getEntityEntry().getEntityName(),
+                    event.getEntityEntry().getId());
             }
         }
 

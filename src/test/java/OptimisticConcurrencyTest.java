@@ -2,13 +2,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.integrator.spi.Integrator;
-import org.hibernate.integrator.spi.IntegratorService;
-import org.hibernate.service.ServiceRegistryBuilder;
+import org.hibernate.event.def.DefaultFlushEntityEventListener;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,27 +13,14 @@ public abstract class OptimisticConcurrencyTest {
 
     private SessionFactory sessionFactory;
 
-    protected Class getCustomFlushEntityEventListenerType() {
-        return null;
-    }
+    protected abstract Class getFlushEntityEventListenerType();
 
     @Before
     public void setup() throws Exception {
         Configuration configuration = new Configuration();
-        configuration.configure("hibernate.cfg.xml");
-        ServiceRegistryBuilder serviceRegistryBuilder =
-                new ServiceRegistryBuilder().applySettings(configuration.getProperties());
+        configuration.setListener("flush-entity", getFlushEntityEventListenerType().newInstance());
 
-        if (getCustomFlushEntityEventListenerType() != null) {
-            serviceRegistryBuilder.addService(IntegratorService.class, new IntegratorService() {
-                @Override
-                public Iterable<Integrator> getIntegrators() {
-                    return Collections.<Integrator>singleton(new TestIntegrator(getCustomFlushEntityEventListenerType()));
-                }
-            });
-        }
-
-        sessionFactory = configuration.buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
+        sessionFactory = configuration.configure().buildSessionFactory();
     }
 
     @Test

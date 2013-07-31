@@ -1,12 +1,8 @@
-import org.hibernate.integrator.spi.Integrator;
-import org.hibernate.integrator.spi.IntegratorService;
-import org.hibernate.service.ServiceRegistryBuilder;
-
-import java.util.Collections;
+import org.hibernate.event.def.DefaultFlushEntityEventListener;
 
 public class VersionCheckingFlushEntityEventListenerTest extends OptimisticConcurrencyTest {
     @Override
-    protected Class getCustomFlushEntityEventListenerType() {
+    protected Class getFlushEntityEventListenerType() {
         return VersionCheckingFlushEntityEventListener.class;
     }
 }
